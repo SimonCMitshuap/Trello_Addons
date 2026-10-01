@@ -11,6 +11,17 @@
 <body>
 
     <script>
+        // Fonction utilitaire pour sécuriser les chaînes contre le XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         TrelloPowerUp.initialize({
             'card-buttons': function (t) {
                 return [{
@@ -50,11 +61,11 @@
                                             '.date { color: #5e6c84; font-size: 11px; margin-bottom: 6px; }' +
                                             '</style>';
 
-                                        contentHtml += '<h1>' + t.sanitize(card.name) + '</h1>';
+                                        contentHtml += '<h1>' + escapeHtml(card.name) + '</h1>';
 
                                         if (card.desc) {
                                             contentHtml += '<h2>Description</h2>';
-                                            contentHtml += '<div class="desc">' + t.sanitize(card.desc) + '</div>';
+                                            contentHtml += '<div class="desc">' + escapeHtml(card.desc) + '</div>';
                                         }
 
                                         contentHtml += '<h2>Commentaires (' + comments.length + ')</h2>';
@@ -68,14 +79,14 @@
                                                 var text = c.data && c.data.text ? c.data.text : '';
 
                                                 contentHtml += '<div class="comment">';
-                                                contentHtml += '<div class="author">' + t.sanitize(author) + '</div>';
+                                                contentHtml += '<div class="author">' + escapeHtml(author) + '</div>';
                                                 contentHtml += '<div class="date">' + date + '</div>';
-                                                contentHtml += '<div>' + t.sanitize(text) + '</div>';
+                                                contentHtml += '<div>' + escapeHtml(text) + '</div>';
                                                 contentHtml += '</div>';
                                             });
                                         }
 
-                                        // 4. Ouverture via la modale native Trello (contourne le bloqueur de pop-up)
+                                        // 4. Ouverture via la modale native Trello
                                         return t.modal({
                                             title: 'Rapport : ' + card.name,
                                             html: contentHtml,
