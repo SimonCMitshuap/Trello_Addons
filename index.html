@@ -10,35 +10,83 @@
     <script>
 TrelloPowerUp.initialize({
 
-    'card-buttons': function (t) {
+   callback: function (t) {
 
-        return [{
-            text: 'Générer Rapport',
+    return t.card('id', 'name', 'desc')
+        .then(function (card) {
 
-            callback: function (t) {
+            var apiKey = 'TA_CLE_API';
+            var token = 'TON_TOKEN';
 
-                return t.card('id', 'name', 'desc')
-                    .then(function (card) {
+            var url =
+                'https://api.trello.com/1/cards/' +
+                card.id +
+                '/actions?filter=commentCard&key=' +
+                apiKey +
+                '&token=' +
+                token;
 
-                        var message =
-                            'ID : ' + card.id +
-                            '\n\nNom : ' + card.name +
-                            '\n\nDescription : ' + card.desc;
+            return fetch(url)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (comments) {
 
-                        alert(message);
+                    var html = '';
 
-                    })
-                    .catch(function (err) {
+                    html += '<html>';
+                    html += '<head>';
+                    html += '<title>' + card.name + '</title>';
+                    html += '<style>';
+                    html += 'body{font-family:Arial;margin:30px;}';
+                    html += 'h1{border-bottom:2px solid #000;}';
+                    html += '.comment{margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid #ccc;}';
+                    html += '.date{color:#666;font-size:12px;}';
+                    html += '</style>';
+                    html += '</head>';
+                    html += '<body>';
 
-                        alert('Erreur : ' + err);
+                    html += '<h1>' + card.name + '</h1>';
+
+                    if (card.desc) {
+                        html += '<h2>Description</h2>';
+                        html += '<p>' + card.desc + '</p>';
+                    }
+
+                    html += '<h2>Commentaires</h2>';
+
+                    comments.forEach(function (c) {
+
+                        html += '<div class="comment">';
+
+                        html += '<strong>' +
+                            c.memberCreator.fullName +
+                            '</strong><br>';
+
+                        html += '<div class="date">' +
+                            c.date +
+                            '</div>';
+
+                        html += '<p>' +
+                            c.data.text +
+                            '</p>';
+
+                        html += '</div>';
 
                     });
 
-            }
+                    html += '</body></html>';
 
-        }];
+                    var reportWindow = window.open('', '_blank');
 
-    }
+                    reportWindow.document.write(html);
+                    reportWindow.document.close();
+
+                });
+
+        });
+
+}
 
 });
 </script>
