@@ -8,7 +8,39 @@
 <body>
     <h1>Trello Addon</h1>
     <script>
-console.log("TrelloPowerUp =", typeof TrelloPowerUp);
+TrelloPowerUp.initialize({
+
+    'card-buttons': function (t) {
+
+        return [{
+            text: 'Générer Rapport',
+
+            callback: function (t) {
+
+                return t.card('id', 'name', 'desc')
+                    .then(function (card) {
+
+                        var message =
+                            'ID : ' + card.id +
+                            '\n\nNom : ' + card.name +
+                            '\n\nDescription : ' + card.desc;
+
+                        alert(message);
+
+                    })
+                    .catch(function (err) {
+
+                        alert('Erreur : ' + err);
+
+                    });
+
+            }
+
+        }];
+
+    }
+
+});
 </script>
 </body>
 </html>
