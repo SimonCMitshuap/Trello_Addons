@@ -1,98 +1,94 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <title>Trello Addon</title>
+    <title>Générateur de Rapport Trello</title>
+    <!-- Chargement officiel du SDK Power-Up de Trello -->
     <script src="https://p.trellocdn.com/power-up.min.js"></script>
 </head>
+
 <body>
-    <h1>Trello Addon</h1>
+
     <script>
-TrelloPowerUp.initialize({
-    'card-buttons': function (t) {
- 
-    return [{
- 
-    text: 'Générer Rapport',
-    callback: function (t) {
+        TrelloPowerUp.initialize({
+            'card-buttons': function (t) {
+                return [{
+                    text: 'Générer Rapport',
+                    callback: function (t) {
 
-    return t.card('id', 'name', 'desc')
-        .then(function (card) {
+                        // 1. Récupération des données de la carte active
+                        return t.card('id', 'name', 'desc')
+                            .then(function (card) {
 
-            var apiKey = '3d8c380a7f3bdb8544d2114dc6ab57b5';
-            var token = 'ATTA8ed5551a5bab744a6bfd5a5c5da3f418f444e9b5b611e1d494ad50aabf313fa32FA960B0';
+                                // Identifiants Trello API
+                                var apiKey = '3d8c380a7f3bdb8544d2114dc6ab57b5';
+                                var token = 'ATTA8ed5551a5bab744a6bfd5a5c5da3f418f444e9b5b611e1d494ad50aabf313fa32FA960B0';
 
-            var url =
-                'https://api.trello.com/1/cards/' +
-                card.id +
-                '/actions?filter=commentCard&key=' +
-                apiKey +
-                '&token=' +
-                token;
+                                var url = 'https://api.trello.com/1/cards/' +
+                                    card.id +
+                                    '/actions?filter=commentCard&key=' +
+                                    apiKey +
+                                    '&token=' +
+                                    token;
 
-            return fetch(url)
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (comments) {
+                                // 2. Appels réseau pour récupérer les commentaires
+                                return fetch(url)
+                                    .then(function (response) {
+                                        return response.json();
+                                    })
+                                    .then(function (comments) {
 
-                    var html = '';
+                                        // 3. Construction du contenu HTML sécurisé
+                                        var contentHtml = '<style>' +
+                                            'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding: 20px; color: #172b4d; }' +
+                                            'h1 { border-bottom: 2px solid #091e4224; padding-bottom: 8px; font-size: 20px; }' +
+                                            'h2 { font-size: 16px; margin-top: 20px; color: #42526e; }' +
+                                            '.desc { background: #f4f5f7; padding: 10px; border-radius: 3px; font-style: italic; }' +
+                                            '.comment { background: #fff; border: 1px solid #dfe1e6; border-radius: 3px; padding: 10px; margin-bottom: 10px; }' +
+                                            '.author { font-weight: bold; color: #091e42; }' +
+                                            '.date { color: #5e6c84; font-size: 11px; margin-bottom: 6px; }' +
+                                            '</style>';
 
-                    html += '<html>';
-                    html += '<head>';
-                    html += '<title>' + card.name + '</title>';
-                    html += '<style>';
-                    html += 'body{font-family:Arial;margin:30px;}';
-                    html += 'h1{border-bottom:2px solid #000;}';
-                    html += '.comment{margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid #ccc;}';
-                    html += '.date{color:#666;font-size:12px;}';
-                    html += '</style>';
-                    html += '</head>';
-                    html += '<body>';
+                                        contentHtml += '<h1>' + t.sanitize(card.name) + '</h1>';
 
-                    html += '<h1>' + card.name + '</h1>';
+                                        if (card.desc) {
+                                            contentHtml += '<h2>Description</h2>';
+                                            contentHtml += '<div class="desc">' + t.sanitize(card.desc) + '</div>';
+                                        }
 
-                    if (card.desc) {
-                        html += '<h2>Description</h2>';
-                        html += '<p>' + card.desc + '</p>';
+                                        contentHtml += '<h2>Commentaires (' + comments.length + ')</h2>';
+
+                                        if (comments.length === 0) {
+                                            contentHtml += '<p>Aucun commentaire sur cette carte.</p>';
+                                        } else {
+                                            comments.forEach(function (c) {
+                                                var author = c.memberCreator ? c.memberCreator.fullName : 'Utilisateur inconnu';
+                                                var date = new Date(c.date).toLocaleString('fr-FR');
+                                                var text = c.data && c.data.text ? c.data.text : '';
+
+                                                contentHtml += '<div class="comment">';
+                                                contentHtml += '<div class="author">' + t.sanitize(author) + '</div>';
+                                                contentHtml += '<div class="date">' + date + '</div>';
+                                                contentHtml += '<div>' + t.sanitize(text) + '</div>';
+                                                contentHtml += '</div>';
+                                            });
+                                        }
+
+                                        // 4. Ouverture via la modale native Trello (contourne le bloqueur de pop-up)
+                                        return t.modal({
+                                            title: 'Rapport : ' + card.name,
+                                            html: contentHtml,
+                                            height: 500
+                                        });
+                                    });
+                            });
                     }
-
-                    html += '<h2>Commentaires</h2>';
-
-                    comments.forEach(function (c) {
-
-                        html += '<div class="comment">';
-
-                        html += '<strong>' +
-                            c.memberCreator.fullName +
-                            '</strong><br>';
-
-                        html += '<div class="date">' +
-                            c.date +
-                            '</div>';
-
-                        html += '<p>' +
-                            c.data.text +
-                            '</p>';
-
-                        html += '</div>';
-
-                    });
-
-                    html += '</body></html>';
-
-                    var reportWindow = window.open('', '_blank');
-
-                    reportWindow.document.write(html);
-                    reportWindow.document.close();
-
-                });
-
+                }];
+            }
         });
+    </script>
 
-}
-];
-});
-</script>
 </body>
+
 </html>
