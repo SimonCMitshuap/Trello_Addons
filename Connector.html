@@ -1,9 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ConstructionERP Export</title>
-</head>
+    <script src="https://p.trellocdn.com/power-up.minhead>
 <body>
-    Power-Up en développement
+
+<script>
+var t = TrelloPowerUp.iframe();
+
+TrelloPowerUp.initialize({
+
+    'card-buttons': function(t, options) {
+
+        return [{
+            icon: 'https://cdn-icons-png.flaticon.com/512/3022/3022251.png',
+            text: 'Générer Rapport',
+
+            callback: function(t) {
+
+                return t.popup({
+                    title: 'Export',
+                    items: [{
+                        text: 'Exporter les commentaires',
+                        callback: function(t) {
+                            alert('Le bouton fonctionne!');
+                            return t.closePopup();
+                        }
+                    }]
+                });
+
+            }
+        }];
+    }
+
+});
+</script>
+
 </body>
 </html>
