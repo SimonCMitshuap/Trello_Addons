@@ -1,68 +1,19 @@
-<!DOCTYPE html>
-<html>
+TrelloPowerUp.initialize({
 
-<head>
-    <meta charset="utf-8">
-    <title>Générateur de Rapport Trello</title>
-    <script src="https://p.trellocdn.com/power-up.min.js"></script>
-</head>
+    'card-buttons': function (t) {
 
-<body>
+        return [{
 
-    <script>
-        TrelloPowerUp.initialize({
-            'card-buttons': function (t) {
-                return [{
-                    text: 'Générer Rapport',
-                    callback: function (t) {
+            text: 'Générer Rapport',
 
-                        return t.card('id', 'name', 'desc')
-                            .then(function (card) {
+            callback: function (t) {
 
-                                var apiKey = '3d8c380a7f3bdb8544d2114dc6ab57b5';
-                                var token = 'ATTA8ed5551a5bab744a6bfd5a5c5da3f418f444e9b5b611e1d494ad50aabf313fa32FA960B0';
+                alert('Le bouton fonctionne !');
 
-                                var url = 'https://api.trello.com/1/cards/' +
-                                    card.id +
-                                    '/actions?filter=commentCard&key=' +
-                                    apiKey +
-                                    '&token=' +
-                                    token;
-
-                                return fetch(url)
-                                    .then(function (res) {
-                                        if (!res.ok) {
-                                            throw new Error('Erreur API Trello : ' + res.statusText + ' (' + res.status + ')');
-                                        }
-                                        return res.json();
-                                    })
-                                    .then(function (comments) {
-
-                                        var summary = 'Nombre de commentaires : ' + comments.length + '\n\n';
-                                        
-                                        if (comments.length === 0) {
-                                            summary += 'Aucun commentaire trouvé.';
-                                        } else {
-                                            comments.forEach(function (c) {
-                                                var author = c.memberCreator ? c.memberCreator.fullName : 'Inconnu';
-                                                var text = c.data && c.data.text ? c.data.text : '';
-                                                summary += '• ' + author + ' : ' + text + '\n';
-                                            });
-                                        }
-
-                                        alert('Rapport pour ' + card.name + ' :\n\n' + summary);
-                                    })
-                                    .catch(function (error) {
-                                        console.error('Erreur Power-Up :', error);
-                                        alert('Impossible de générer le rapport :\n' + error.message);
-                                    });
-                            });
-                    }
-                }];
             }
-        });
-    </script>
 
-</body>
+        }];
 
-</html>
+    }
+
+});
