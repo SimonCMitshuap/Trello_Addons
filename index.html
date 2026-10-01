@@ -2,32 +2,27 @@
 <html>
 
 <head>
-    <script srcrellocdn.com/power-up.min.jsscript>
+
+    <!-- Inclusion correcte du SDK Trello Power-Up via le CDN officiel -->
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+
 </head>
 
 <body>
 
-<script>
-
-TrelloPowerUp.initialize({
-
-    'card-buttons': function(t) {
-
-        return [{
-            text: 'Générer Rapport',
-
-            callback: function(t) {
-
-                alert('Le Power-Up fonctionne !');
-
-                return t;
+    <script>
+        TrelloPowerUp.initialize({
+            'card-buttons': function (t) {
+                return [{
+                    text: 'Générer Rapport',
+                    callback: function (t) {
+                        alert('Le Power-Up fonctionne !');
+                        return t;
+                    }
+                }];
             }
-        }];
-    }
-
-});
-
-</script>
+        });
+    </script>
 
 </body>
 
