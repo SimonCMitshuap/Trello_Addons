@@ -1,11 +1,34 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Test Trello</title>
+    <script srcrellocdn.com/power-up.min.jsscript>
 </head>
+
 <body>
 
-<h1>Mon Power-Up fonctionne</h1>
+<script>
+
+TrelloPowerUp.initialize({
+
+    'card-buttons': function(t) {
+
+        return [{
+            text: 'Générer Rapport',
+
+            callback: function(t) {
+
+                alert('Le Power-Up fonctionne !');
+
+                return t;
+            }
+        }];
+    }
+
+});
+
+</script>
 
 </body>
+
 </html>
