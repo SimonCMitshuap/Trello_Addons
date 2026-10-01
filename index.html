@@ -9,8 +9,12 @@
     <h1>Trello Addon</h1>
     <script>
 TrelloPowerUp.initialize({
-
-   callback: function (t) {
+    'card-buttons': function (t) {
+ 
+    return [{
+ 
+    text: 'Générer Rapport',
+    callback: function (t) {
 
     return t.card('id', 'name', 'desc')
         .then(function (card) {
@@ -87,7 +91,7 @@ TrelloPowerUp.initialize({
         });
 
 }
-
+];
 });
 </script>
 </body>
