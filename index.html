@@ -1,19 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script srcrellocdn.com/power-up.min.jsscript>
+</head>
+<body>
+
+<h1>Power-Up actif</h1>
+
+<script>
+
+console.log("SCRIPT CHARGE");
+
 TrelloPowerUp.initialize({
 
-    'card-buttons': function (t) {
+    'card-buttons': function(t) {
+
+        console.log("CARD BUTTONS");
 
         return [{
+            text: 'Test',
+            callback: function(t) {
 
-            text: 'Générer Rapport',
+                console.log("BOUTON CLIQUE");
 
-            callback: function (t) {
-
-                alert('Le bouton fonctionne !');
+                alert("Bouton OK");
 
             }
-
         }];
 
     }
 
 });
+
+</script>
+
+</body>
+</html>
