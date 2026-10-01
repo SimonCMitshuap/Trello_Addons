@@ -4,35 +4,21 @@
 <head>
     <meta charset="utf-8">
     <title>Générateur de Rapport Trello</title>
-    <!-- Chargement officiel du SDK Power-Up de Trello -->
     <script src="https://p.trellocdn.com/power-up.min.js"></script>
 </head>
 
 <body>
 
     <script>
-        // Fonction utilitaire pour sécuriser les chaînes contre le XSS
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
         TrelloPowerUp.initialize({
             'card-buttons': function (t) {
                 return [{
                     text: 'Générer Rapport',
                     callback: function (t) {
 
-                        // 1. Récupération des données de la carte active
                         return t.card('id', 'name', 'desc')
                             .then(function (card) {
 
-                                // Identifiants Trello API
                                 var apiKey = '3d8c380a7f3bdb8544d2114dc6ab57b5';
                                 var token = 'ATTA8ed5551a5bab744a6bfd5a5c5da3f418f444e9b5b611e1d494ad50aabf313fa32FA960B0';
 
@@ -43,55 +29,32 @@
                                     '&token=' +
                                     token;
 
-                                // 2. Appels réseau pour récupérer les commentaires
                                 return fetch(url)
-                                    .then(function (response) {
-                                        return response.json();
+                                    .then(function (res) {
+                                        if (!res.ok) {
+                                            throw new Error('Erreur API Trello : ' + res.statusText + ' (' + res.status + ')');
+                                        }
+                                        return res.json();
                                     })
                                     .then(function (comments) {
 
-                                        // 3. Construction du contenu HTML sécurisé
-                                        var contentHtml = '<style>' +
-                                            'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding: 20px; color: #172b4d; }' +
-                                            'h1 { border-bottom: 2px solid #091e4224; padding-bottom: 8px; font-size: 20px; }' +
-                                            'h2 { font-size: 16px; margin-top: 20px; color: #42526e; }' +
-                                            '.desc { background: #f4f5f7; padding: 10px; border-radius: 3px; font-style: italic; }' +
-                                            '.comment { background: #fff; border: 1px solid #dfe1e6; border-radius: 3px; padding: 10px; margin-bottom: 10px; }' +
-                                            '.author { font-weight: bold; color: #091e42; }' +
-                                            '.date { color: #5e6c84; font-size: 11px; margin-bottom: 6px; }' +
-                                            '</style>';
-
-                                        contentHtml += '<h1>' + escapeHtml(card.name) + '</h1>';
-
-                                        if (card.desc) {
-                                            contentHtml += '<h2>Description</h2>';
-                                            contentHtml += '<div class="desc">' + escapeHtml(card.desc) + '</div>';
-                                        }
-
-                                        contentHtml += '<h2>Commentaires (' + comments.length + ')</h2>';
-
+                                        var summary = 'Nombre de commentaires : ' + comments.length + '\n\n';
+                                        
                                         if (comments.length === 0) {
-                                            contentHtml += '<p>Aucun commentaire sur cette carte.</p>';
+                                            summary += 'Aucun commentaire trouvé.';
                                         } else {
                                             comments.forEach(function (c) {
-                                                var author = c.memberCreator ? c.memberCreator.fullName : 'Utilisateur inconnu';
-                                                var date = new Date(c.date).toLocaleString('fr-FR');
+                                                var author = c.memberCreator ? c.memberCreator.fullName : 'Inconnu';
                                                 var text = c.data && c.data.text ? c.data.text : '';
-
-                                                contentHtml += '<div class="comment">';
-                                                contentHtml += '<div class="author">' + escapeHtml(author) + '</div>';
-                                                contentHtml += '<div class="date">' + date + '</div>';
-                                                contentHtml += '<div>' + escapeHtml(text) + '</div>';
-                                                contentHtml += '</div>';
+                                                summary += '• ' + author + ' : ' + text + '\n';
                                             });
                                         }
 
-                                        // 4. Ouverture via la modale native Trello
-                                        return t.modal({
-                                            title: 'Rapport : ' + card.name,
-                                            html: contentHtml,
-                                            height: 500
-                                        });
+                                        alert('Rapport pour ' + card.name + ' :\n\n' + summary);
+                                    })
+                                    .catch(function (error) {
+                                        console.error('Erreur Power-Up :', error);
+                                        alert('Impossible de générer le rapport :\n' + error.message);
                                     });
                             });
                     }
