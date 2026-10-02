@@ -33,7 +33,14 @@ TrelloPowerUp.initialize({
         
 // Fonction principale
 function genererRapport(t) {
-
+    alert(
+"modal = " + typeof t.modal +
+"\npopup = " + typeof t.popup
+);
+    console.log("modal =", typeof t.modal); //
+    console.log("popup =", typeof t.popup);//
+    console.log("card =", typeof t.card);//
+    
     let carteCourante;
 
     return t.card('id', 'name')
@@ -54,6 +61,7 @@ function genererRapport(t) {
             );
 
             afficherApercu(
+                t,
                 rapportHtml
             );
 
@@ -142,7 +150,7 @@ function boutonsActions() {
 
 
 // Affichage de l'aperçu
-function afficherApercu(t) {
+function afficherApercu(t,html) {
 
     return t.modal({
         url: './preview.html',
