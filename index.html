@@ -145,10 +145,13 @@ function boutonsActions() {
 function afficherApercu(html) {
 
     const fenetre =
-        window.open(
-            "",
-            "_blank"
-        );
+        return t.modal({
+         
+        url: './preview.html',
+        title: 'Rapport des commentairesV3',
+        fullscreen: true
+         
+        });
 
     console.log("Fenetre =", fenetre);
 
