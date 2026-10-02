@@ -59,8 +59,12 @@ function genererRapport(t) {
                 carteCourante,
                 comments
             );
+            localStorage.setItem(
+                "rapportHtml",
+                rapportHtml
+            );
 
-            afficherApercu(t,rapportHtml);
+            return afficherApercu(t,rapportHtml);
 
         })
 
