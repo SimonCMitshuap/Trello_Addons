@@ -18,13 +18,15 @@
             console.log("CARD BUTTONS");
 
             return [{
-                text: 'TestV2',
-                callback: function(t) {
-
-                    console.log("BOUTON CLIQUE");
-
-                    alert("Bouton OK");
-
+                text: 'TestV3',
+               callback: function(t) {
+                   return t.card('id', 'name')
+                        .then(function(card) {
+                            alert(
+                                'ID: ' + card.id +
+                                '\nNom: ' + card.name
+                            );
+                        });
                 }
             }];
 
