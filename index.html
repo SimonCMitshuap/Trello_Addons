@@ -8,20 +8,22 @@
     <h1>Power-Up actif</h1>
 
     <script>
-alert("VERSION 22");
+alert("VERSION 23");
 console.log("SCRIPT CHARGE");
 
 // Configuration
 const API_KEY = "3d8c380a7f3bdb8544d2114dc6ab57b5";
 const TOKEN = "ATTA8ed5551a5bab744a6bfd5a5c5da3f418f444e9b5b611e1d494ad50aabf313fa32FA960B0";
+const buttonName = "Rapport des commentaires";
 
+        
 // Initialisation du Power-Up
 TrelloPowerUp.initialize({
 
     'card-buttons': function(t) {
 
         return [{
-            text: "Rapport des commentaires",
+            text: buttonName,
             callback: genererRapport
         }];
 
@@ -140,8 +142,29 @@ function boutonsActions() {
 
 
 // Affichage de l'aperçu
-
 function afficherApercu(html) {
+
+    const fenetre =
+        window.open(
+            "",
+            "_blank"
+        );
+
+    console.log("Fenetre =", fenetre);
+
+    if (!fenetre) {
+
+        alert("window.open a retourné NULL");
+
+        return;
+    }
+
+    fenetre.document.open();
+    fenetre.document.write(html);
+    fenetre.document.close();
+
+}
+/*function afficherApercu(html) {
     const fenetre =
         window.open(
             "",
@@ -154,7 +177,7 @@ function afficherApercu(html) {
 
     fenetre.document.close();
 
-}
+}*/
 
 
 // Téléchargement du rapport
