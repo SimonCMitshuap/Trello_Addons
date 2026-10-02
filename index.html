@@ -8,7 +8,6 @@
     <h1>Power-Up actif</h1>
 
     <script>
-alert("VERSION 23");
 console.log("SCRIPT CHARGE");
 
 // Configuration
@@ -33,10 +32,7 @@ TrelloPowerUp.initialize({
         
 // Fonction principale
 function genererRapport(t) {
-    alert(
-"modal = " + typeof t.modal +
-"\npopup = " + typeof t.popup
-);
+
     console.log("modal =", typeof t.modal); //
     console.log("popup =", typeof t.popup);//
     console.log("card =", typeof t.card);//
@@ -188,35 +184,8 @@ function afficherApercu(t, rapportHtml) {
     });
 
 }
-        
-/*function afficherApercu(t) {
-
-    const fenetre =
-        return t.modal({
-         
-        url: './preview.html',
-        title: 'Rapport des commentairesV3',
-        fullscreen: true
-         
-        });
-
-    console.log("Fenetre =", fenetre);
-
-    if (!fenetre) {
-
-        alert("window.open a retourné NULL");
-
-        return;
-    }
-
-    fenetre.document.open();
-    fenetre.document.write(html);
-    fenetre.document.close();
-
-}*/
 
 // Téléchargement du rapport
-
 function telechargerRapport(html) {
 
     const blob =
