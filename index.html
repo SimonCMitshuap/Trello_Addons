@@ -8,86 +8,179 @@
     <h1>Power-Up actif</h1>
 
     <script>
-alert("VERSION 21");
+alert("VERSION 22");
 console.log("SCRIPT CHARGE");
 
+// Configuration
 const API_KEY = "3d8c380a7f3bdb8544d2114dc6ab57b5";
 const TOKEN = "ATTA8ed5551a5bab744a6bfd5a5c5da3f418f444e9b5b611e1d494ad50aabf313fa32FA960B0";
 
+// Initialisation du Power-Up
 TrelloPowerUp.initialize({
 
     'card-buttons': function(t) {
 
-        console.log("CARD BUTTONS");
-
         return [{
-            text: 'TestV3',
-
-            callback: function(t) {
-
-                return t.card('id', 'name')
-
-                    .then(function(card) {
-
-                        console.log("Carte:", card);
-
-                        const url =
-                            "https://api.trello.com/1/cards/" +
-                            card.id +
-                            "/actions?filter=commentCard" +
-                            "&key=" + API_KEY +
-                            "&token=" + TOKEN;
-
-                        console.log(url);
-
-                        return fetch(url);
-
-                    })
-
-                    .then(function(response) {
-
-                        return response.json();
-
-                    })
-
-                    .then(function(comments) {
-
-                        console.log(comments);
-
-                        let rapport = "";
-                    
-                        comments.reverse().forEach(function(comment) {
-                    
-                        rapport +=
-                            comment.memberCreator.fullName +
-                            "\n" +
-                            comment.data.text +
-                            "\n\n";
-                    
-                    });
-                    
-                    alert(rapport);
-
-                    })
-
-                    .catch(function(error) {
-
-                        console.error(error);
-
-                        alert(
-                            "Erreur : " +
-                            error.message
-                        );
-
-                    });
-
-            }
-
+            text: "Rapport des commentaires",
+            callback: genererRapport
         }];
 
     }
 
 });
+        
+// Fonction principale
+function genererRapport(t) {
+
+    let carteCourante;
+
+    return t.card('id', 'name')
+
+        .then(function(card) {
+
+            carteCourante = card;
+
+            return chargerCommentaires(card.id);
+
+        })
+
+        .then(function(comments) {
+
+            let rapportHtml = construireRapport(
+                carteCourante,
+                comments
+            );
+
+            afficherApercu(
+                rapportHtml
+            );
+
+        })
+
+        .catch(function(error) {
+
+            console.error(error);
+
+            alert(
+                "Erreur : " +
+                error.message
+            );
+
+        });
+
+}
+        
+// Lecture des commentaires Trello
+function chargerCommentaires(cardId) {
+
+    const url =
+        "https://api.trello.com/1/cards/" +
+        cardId +
+        "/actions?filter=commentCard" +
+        "&key=" + API_KEY +
+        "&token=" + TOKEN;
+
+    return fetch(url)
+
+        .then(function(response) {
+
+            return response.json();
+
+        });
+
+}
+        
+// Construction du rapport
+function construireRapport(card, comments) {
+
+    let html = "";
+
+    html += titreRapport(card);
+
+    comments.reverse().forEach(function(comment) {
+
+        html += blocCommentaire(comment);
+
+    });
+
+    html += boutonsActions();
+
+    return html;
+
+}
+
+// Entête du rapport
+function titreRapport(card) {
+
+    return "...";
+
+}
+
+// Bloc commentaire
+function blocCommentaire(comment) {
+
+    const auteur =
+        comment.memberCreator.fullName;
+
+    const date =
+        new Date(comment.date)
+            .toLocaleString('fr-CA');
+
+    const texte =
+        comment.data.text;
+
+    return "...";
+}
+
+
+// Boutons d'action
+function boutonsActions() {
+    return "...";
+}
+
+
+// Affichage de l'aperçu
+
+function afficherApercu(html) {
+    const fenetre =
+        window.open(
+            "",
+            "_blank"
+        );
+
+    fenetre.document.open();
+
+    fenetre.document.write(html);
+
+    fenetre.document.close();
+
+}
+
+
+// Téléchargement du rapport
+
+function telechargerRapport(html) {
+
+    const blob =
+        new Blob(
+            [html],
+            {
+                type: "text/html"
+            }
+        );
+
+    const lien =
+        document.createElement("a");
+
+    lien.href =
+        URL.createObjectURL(blob);
+
+    lien.download =
+        "Rapport_Trello.html";
+
+    lien.click();
+
+}
     </script>
 
     </body>
