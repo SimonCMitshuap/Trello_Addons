@@ -8,32 +8,77 @@
     <h1>Power-Up actif</h1>
 
     <script>
-    alert("VERSION 20");
-    console.log("SCRIPT CHARGE");
+alert("VERSION 21");
+console.log("SCRIPT CHARGE");
 
-    TrelloPowerUp.initialize({
+const API_KEY = "3d8c380a7f3bdb8544d2114dc6ab57b5";
+const TOKEN = "ATTA8ed5551a5bab744a6bfd5a5c5da3f418f444e9b5b611e1d494ad50aabf313fa32FA960B0";
 
-        'card-buttons': function(t) {
+TrelloPowerUp.initialize({
 
-            console.log("CARD BUTTONS");
+    'card-buttons': function(t) {
 
-            return [{
-                text: 'TestV3',
-               callback: function(t) {
-                   return t.card('id', 'name')
-                        .then(function(card) {
-                            alert(
-                                'ID: ' + card.id +
-                                '\nNom: ' + card.name
-                            );
-                        });
-                }
-            }];
+        console.log("CARD BUTTONS");
 
-        }
+        return [{
+            text: 'TestV3',
 
-    });
+            callback: function(t) {
 
+                return t.card('id', 'name')
+
+                    .then(function(card) {
+
+                        console.log("Carte:", card);
+
+                        const url =
+                            "https://api.trello.com/1/cards/" +
+                            card.id +
+                            "/actions?filter=commentCard" +
+                            "&key=" + API_KEY +
+                            "&token=" + TOKEN;
+
+                        console.log(url);
+
+                        return fetch(url);
+
+                    })
+
+                    .then(function(response) {
+
+                        return response.json();
+
+                    })
+
+                    .then(function(comments) {
+
+                        console.log(comments);
+
+                        alert(
+                            comments.length +
+                            " commentaire(s) trouvé(s)"
+                        );
+
+                    })
+
+                    .catch(function(error) {
+
+                        console.error(error);
+
+                        alert(
+                            "Erreur : " +
+                            error.message
+                        );
+
+                    });
+
+            }
+
+        }];
+
+    }
+
+});
     </script>
 
     </body>
