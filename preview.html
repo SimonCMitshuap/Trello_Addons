@@ -4,14 +4,25 @@
 
 <h1>Preview fonctionne</h1>
 <script>
-
+    
 const rapport =
     localStorage.getItem(
         "rapportHtml"
     );
 
+console.log("rapport =", rapport);
+
 document.body.innerHTML =
-    rapport;
+    rapport
+    ? rapport
+    : "<h1>Aucun rapport trouvé</h1>";
+/*const rapport =
+    localStorage.getItem(
+        "rapportHtml"
+    );
+
+document.body.innerHTML =
+    rapport;*/
 
 </script>
 </body>
