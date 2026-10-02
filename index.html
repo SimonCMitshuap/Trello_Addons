@@ -124,7 +124,11 @@ function construireRapport(card, comments) {
 // Entête du rapport
 function titreRapport(card) {
 
-    return "...";
+    return `
+        <h1>Rapport de suivi des communications</h1>
+        <h2>${card.name}</h2>
+        <hr>
+    `;
 
 }
 
@@ -141,13 +145,32 @@ function blocCommentaire(comment) {
     const texte =
         comment.data.text;
 
-    return "...";
+    return `
+        <div style="margin-bottom:20px;">
+
+            <b>${auteur}</b><br>
+
+            <small>${date}</small>
+
+            <p>${texte}</p>
+
+            <hr>
+
+        </div>
+    `;
+
 }
 
 
 // Boutons d'action
 function boutonsActions() {
-    return "...";
+
+    return `
+        <button onclick="window.print()">
+            Imprimer
+        </button>
+    `;
+
 }
 
 
