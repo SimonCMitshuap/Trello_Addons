@@ -142,7 +142,17 @@ function boutonsActions() {
 
 
 // Affichage de l'aperçu
-function afficherApercu(html) {
+function afficherApercu(t) {
+
+    return t.modal({
+        url: './preview.html',
+        title: 'Rapport des commentaires V3',
+        fullscreen: true
+    });
+
+}
+        
+/*function afficherApercu(t) {
 
     const fenetre =
         return t.modal({
@@ -166,22 +176,7 @@ function afficherApercu(html) {
     fenetre.document.write(html);
     fenetre.document.close();
 
-}
-/*function afficherApercu(html) {
-    const fenetre =
-        window.open(
-            "",
-            "_blank"
-        );
-
-    fenetre.document.open();
-
-    fenetre.document.write(html);
-
-    fenetre.document.close();
-
 }*/
-
 
 // Téléchargement du rapport
 
